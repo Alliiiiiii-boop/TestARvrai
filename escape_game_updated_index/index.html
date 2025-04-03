@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Escape Game</title>
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at center, #000c1f 0%, #000000 100%);
+      color: #00ffcc;
+      font-family: 'Courier New', Courier, monospace;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-top: 40px;
+      text-shadow: 0 0 10px #00ffcc;
+      animation: flicker 2s infinite;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin-bottom: 40px;
+      text-shadow: 0 0 6px #00ffcc;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto auto;
+      gap: 20px;
+      justify-items: center;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .button {
+      width: 100px;
+      height: 100px;
+      border: 2px solid #00ffcc;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #001c1c, #002828);
+      color: #00ffcc;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 0 12px #00ffcc44;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+
+    .button:hover {
+      transform: scale(1.1);
+      background: linear-gradient(145deg, #003333, #004d4d);
+      box-shadow: 0 0 20px #00ffee;
+    }
+
+    .button:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 20px;
+      color: #00ffaa88;
+      text-shadow: 0 0 6px #00ffcc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Escape Game</h1>
+  <h2>Choisissez votre mission</h2>
+
+  <div class="menu">
+    <button id="btn1" class="button" onclick="location.href='puzzle.html'">1</button>
+    <button id="btn2" class="button" onclick="location.href='mission2.html'">2</button>
+    <button class="button" disabled>3</button>
+    <button class="button" disabled>4</button>
+    <button class="button" disabled>5</button>
+  </div>
+
+  <div id="menu-timer" class="footer">⏱️ Temps restant : <span id="time">--:--</span></div>
+
+  <script>
+    const startKey = 'escapeStartTime';
+    const duration = 60 * 60 * 1000;
+
+    if (!localStorage.getItem(startKey)) {
+      localStorage.setItem(startKey, Date.now().toString());
+    }
+
+    function updateMenuTimer() {
+      const startTime = parseInt(localStorage.getItem(startKey));
+      const now = Date.now();
+      const elapsed = now - startTime;
+      const remaining = Math.max(0, duration - elapsed);
+      const minutes = Math.floor(remaining / 60000);
+      const seconds = Math.floor((remaining % 60000) / 1000);
+      document.getElementById("time").textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      
+      if (remaining > 0) {
+        setTimeout(updateMenuTimer, 1000);
+      } else {
+        document.getElementById("time").textContent = "⏰ Temps écoulé";
+      }
+    }
+
+    updateMenuTimer();
+
+    // Unlock completed missions
+    if (localStorage.getItem("puzzle1Complete") === "true") {
+      const btn1 = document.getElementById("btn1");
+      btn1.style.backgroundColor = "green";
+      btn1.style.color = "#001a1a";
+      btn1.style.boxShadow = "0 0 20px #00ff88";
+    }
+
+    if (localStorage.getItem("puzzle2Complete") === "true") {
+      const btn2 = document.getElementById("btn2");
+      btn2.style.backgroundColor = "green";
+      btn2.style.color = "#001a1a";
+      btn2.style.boxShadow = "0 0 20px #00ff88";
+    }
+  </script>
+</body>
+</html>
